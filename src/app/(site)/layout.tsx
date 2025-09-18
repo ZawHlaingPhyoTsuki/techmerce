@@ -1,5 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import { useEffect, useState } from "react";
 import "../css/euclid-circular-a-font.css";
 import "../css/style.css";
 import Header from "../../components/Header";
@@ -15,6 +16,7 @@ import PreviewSliderModal from "@/components/Common/PreviewSlider";
 
 import ScrollToTop from "@/components/Common/ScrollToTop";
 import PreLoader from "@/components/Common/PreLoader";
+import { Toaster, toast } from "sonner";
 
 export default function RootLayout({
   children,
@@ -22,10 +24,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const [loading, setLoading] = useState<boolean>(true);
+  const [ready, setReady] = useState<boolean>(false);
 
   useEffect(() => {
-    setTimeout(() => setLoading(false), 1000);
+    const timer = setTimeout(() => {
+      setLoading(false);
+      setReady(true);
+    }, 1000);
+
+    return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (ready) {
+      toast("Name: Zaw Hlaing Phyo", {
+        description: "ID: 240702401784"
+      });
+    }
+  }, [ready]);
 
   return (
     <html lang="en" suppressHydrationWarning={true}>
@@ -40,7 +56,7 @@ export default function RootLayout({
                   <PreviewSliderProvider>
                     <Header />
                     {children}
-
+                    <Toaster closeButton position="top-center" />
                     <QuickViewModal />
                     <CartSidebarModal />
                     <PreviewSliderModal />
